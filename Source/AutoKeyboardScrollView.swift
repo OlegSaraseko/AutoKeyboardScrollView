@@ -178,19 +178,19 @@ public class AutoKeyboardScrollView: UIScrollView {
 			}
 			
             if textField.actionsForTarget(scrollView, forControlEvent: .EditingDidBegin) == nil {
-                textField.addTarget(scrollView, action: "_textFieldEditingDidBegin:", forControlEvents: .EditingDidBegin)
+                textField.addTarget(scrollView, action: #selector(AutoKeyboardScrollView._textFieldEditingDidBegin(_:)), forControlEvents: .EditingDidBegin)
             }
             
             if textField.actionsForTarget(scrollView, forControlEvent: .EditingChanged) == nil {
-                textField.addTarget(scrollView, action: "_textFieldEditingChanged:", forControlEvents: .EditingChanged)
+                textField.addTarget(scrollView, action: #selector(AutoKeyboardScrollView._textFieldEditingChanged(_:)), forControlEvents: .EditingChanged)
             }
             
             if textField.actionsForTarget(scrollView, forControlEvent: .EditingDidEnd) == nil {
-                textField.addTarget(scrollView, action: "_textFieldEditingDidEnd:", forControlEvents: .EditingDidEnd)
+                textField.addTarget(scrollView, action: #selector(AutoKeyboardScrollView._textFieldEditingDidEnd(_:)), forControlEvents: .EditingDidEnd)
             }
             
             if textField.actionsForTarget(scrollView, forControlEvent: .EditingDidEndOnExit) == nil {
-                textField.addTarget(scrollView, action: "_textFieldEditingDidEndOnExit:", forControlEvents: .EditingDidEndOnExit)
+                textField.addTarget(scrollView, action: #selector(AutoKeyboardScrollView._textFieldEditingDidEndOnExit(_:)), forControlEvents: .EditingDidEndOnExit)
             }
         }
 		
@@ -219,19 +219,19 @@ public class AutoKeyboardScrollView: UIScrollView {
 			}
 			
 			if textField.actionsForTarget(scrollView, forControlEvent: .EditingDidBegin) != nil {
-				textField.removeTarget(scrollView, action: "_textFieldEditingDidBegin:", forControlEvents: .EditingDidBegin)
+				textField.removeTarget(scrollView, action: #selector(AutoKeyboardScrollView._textFieldEditingDidBegin(_:)), forControlEvents: .EditingDidBegin)
 			}
 			
 			if textField.actionsForTarget(scrollView, forControlEvent: .EditingChanged) != nil {
-				textField.removeTarget(scrollView, action: "_textFieldEditingChanged:", forControlEvents: .EditingChanged)
+				textField.removeTarget(scrollView, action: #selector(AutoKeyboardScrollView._textFieldEditingChanged(_:)), forControlEvents: .EditingChanged)
 			}
 			
 			if textField.actionsForTarget(scrollView, forControlEvent: .EditingDidEnd) != nil {
-				textField.removeTarget(scrollView, action: "_textFieldEditingDidEnd:", forControlEvents: .EditingDidEnd)
+				textField.removeTarget(scrollView, action: #selector(AutoKeyboardScrollView._textFieldEditingDidEnd(_:)), forControlEvents: .EditingDidEnd)
 			}
 			
 			if textField.actionsForTarget(scrollView, forControlEvent: .EditingDidEndOnExit) != nil {
-				textField.removeTarget(scrollView, action: "_textFieldEditingDidEndOnExit:", forControlEvents: .EditingDidEndOnExit)
+				textField.removeTarget(scrollView, action: #selector(AutoKeyboardScrollView._textFieldEditingDidEndOnExit(_:)), forControlEvents: .EditingDidEndOnExit)
 			}
 		}
         
@@ -347,7 +347,7 @@ public class AutoKeyboardScrollView: UIScrollView {
 // MARK: TapGesture - Tap to dismiss
 extension AutoKeyboardScrollView {
     private func setupGestures() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: "scrollViewTapped:")
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(AutoKeyboardScrollView._scrollViewTapped(_:)))
         tapGesture.cancelsTouchesInView = false
         self.addGestureRecognizer(tapGesture)
     }
@@ -393,7 +393,7 @@ extension AutoKeyboardScrollView {
         // Since UIKeyboardWillChangeFrameNotification will be posted before willShow and willBeHidden, to avoid duplicated animations, detecting keyboard behaviors only from this notification
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: "keyboardWillChange:",
+            selector: #selector(AutoKeyboardScrollView.keyboardWillChange(_:)),
             name: UIKeyboardWillChangeFrameNotification,
             object: nil)
     }
@@ -503,7 +503,8 @@ extension AutoKeyboardScrollView {
         return (notification.userInfo![UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue as NSTimeInterval!
     }
     
-    private func isIOS7() -> Bool { return floor(NSFoundationVersionNumber) <= floor(NSFoundationVersionNumber_iOS_7_1) }
+    private func isIOS7() -> Bool { return !isIOS8() }
+    private func isIOS8() -> Bool { return floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1 }
     
     private func isLandscapeMode() -> Bool {
         return UIInterfaceOrientationIsLandscape(UIApplication.sharedApplication().statusBarOrientation)
